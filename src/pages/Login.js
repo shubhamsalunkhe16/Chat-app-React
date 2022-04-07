@@ -16,13 +16,13 @@ function Login() {
   const handleLogin = () => {
     console.log("user", user);
 
-    axios.get("http://10.100.0.59:8000/login/" + user).then((res) => {
+    axios.get("https://10.100.0.59:8000/login/" + user).then((res) => {
       console.log("port", res, res.data.port);
       navigate(`/chat/${user}`, {
         state: { port: res.data.port },
       });
       axios
-        .get(`http://10.100.0.59:${res.data.port}/replace_user_chain`)
+        .get(`https://10.100.0.59:${res.data.port}/replace_user_chain`)
         .then((res) => {
           console.log("replace_user_chain", res.data);
         });

@@ -15,7 +15,7 @@ function Register() {
 
   const handleRegister = () => {
     axios
-      .post("http://10.100.0.59:8000/add_user", {
+      .post("https://10.100.0.59:8000/add_user", {
         username: user,
       })
       .then((res) => {

@@ -69,7 +69,7 @@ function Chat() {
       behavior: "smooth",
     });
 
-    axios.get("http://10.100.0.59:8000/get_users_chain").then((res) => {
+    axios.get("https://10.100.0.59:8000/get_users_chain").then((res) => {
       var usersArray = res.data.chain
         .filter((data) => {
           return data.users.length !== 0 && data.users[0].username !== user;
@@ -83,7 +83,7 @@ function Chat() {
     });
 
     // axios
-    //   .get(`http://10.100.0.59:${location.state.port}/get_chain`)
+    //   .get(`https://10.100.0.59:${location.state.port}/get_chain`)
     //   .then((res) => {
     //     var msgArray = res.data.chain.map((data, i) => {
     //       console.log("msg", data?.transactions[0]);
@@ -92,14 +92,14 @@ function Chat() {
     //     setMessageArray(msgArray);
     //   });
 
-    setInterval(() => {
+    var intervalMsg = setInterval(() => {
       document.getElementById("meassgeContainer").scroll({
         bottom: 0,
         behavior: "smooth",
       });
 
       axios
-        .get(`http://10.100.0.59:${location.state.port}/get_chain`)
+        .get(`https://10.100.0.59:${location.state.port}/get_chain`)
         .then((res) => {
           var msgArray = res.data.chain.map((data, i) => {
             console.log("msg****", data?.transactions[0]);
@@ -108,17 +108,19 @@ function Chat() {
           setMessageArray(msgArray);
         });
       axios
-        .get(`http://10.100.0.59:${location.state.port}/replace_chain`)
+        .get(`https://10.100.0.59:${location.state.port}/replace_chain`)
         .then((res) => {
           console.log("replace_chain**");
         });
     }, 5000);
 
     axios
-      .get(`http://10.100.0.59:${location.state.port}/replace_chain`)
+      .get(`https://10.100.0.59:${location.state.port}/replace_chain`)
       .then((res) => {
         console.log("replace_chain", res.data);
       });
+
+    return () => clearInterval(intervalMsg);
   }, []);
 
   const handleSetUser = (user) => {
@@ -128,14 +130,14 @@ function Chat() {
       behavior: "smooth",
     });
 
-    axios.get(`http://10.100.0.59:${port}/get_chain`).then((res) => {
+    axios.get(`https://10.100.0.59:${port}/get_chain`).then((res) => {
       var msgArray = res.data.chain.map((data, i) => {
         console.log("msg****", data?.transactions[0]);
         return data?.transactions[0];
       });
       setMessageArray(msgArray);
     });
-    axios.get(`http://10.100.0.59:${port}/replace_chain`).then((res) => {
+    axios.get(`https://10.100.0.59:${port}/replace_chain`).then((res) => {
       console.log("replace_chain**");
     });
   };
@@ -146,16 +148,16 @@ function Chat() {
       behavior: "smooth",
     });
     axios
-      .post(`http://10.100.0.59:${port}/add_msg `, {
+      .post(`https://10.100.0.59:${port}/add_msg `, {
         sender: loggedInUser,
         receiver: user,
         msg: message,
       })
       .then((res) => {
-        axios.get(`http://10.100.0.59:${port}/replace_chain`).then((res) => {
+        axios.get(`https://10.100.0.59:${port}/replace_chain`).then((res) => {
           console.log("replace_chain**");
         });
-        axios.get(`http://10.100.0.59:${port}/get_chain`).then((res) => {
+        axios.get(`https://10.100.0.59:${port}/get_chain`).then((res) => {
           var msgArray = res.data.chain.map((data, i) => {
             console.log("detch messages after send****", data?.transactions[0]);
             return data?.transactions[0];
@@ -180,7 +182,7 @@ function Chat() {
     <Grid
       container
       spacing={2}
-      sx={{ width: "90%", margin: "0 auto", overflow: "hidden" }}
+      sx={{ width: "100%", margin: "0 auto", overflow: "hidden" }}
     >
       <Grid item xs={4}>
         <Item>
@@ -225,7 +227,7 @@ function Chat() {
               height: "60px",
               position: "fixed",
               top: "16px",
-              width: "58%",
+              width: "65%",
               zIndex: "10",
             }}
           >
@@ -296,11 +298,11 @@ function Chat() {
           </Box>
           <Item
             sx={{
-              backgroundColor: "#1fadad",
+              backgroundColor: "white",
               height: "60px",
               position: "fixed",
               bottom: "30px",
-              width: "58%",
+              width: "65%",
               display: "flex",
             }}
           >
@@ -313,14 +315,17 @@ function Chat() {
                 setMessage(e.target.value);
               }}
               placeholder="Send Message"
-              sx={{ flex: "1" }}
+              sx={{
+                flex: "1",
+                backgroundColor: "#edf5f9",
+              }}
             />
             <FabButton
               disabled={sendBtnDisable}
               aria-label="edit"
               sx={{
                 ml: "10px",
-                // backgroundColor: "#3dafea"
+                backgroundColor: "#3dafea",
               }}
               onClick={() => {
                 sendMeassge();
