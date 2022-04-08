@@ -11,15 +11,17 @@ import axios from "axios";
 
 function Register() {
   const [user, setUser] = React.useState("");
+  const [password, setPassword] = React.useState("");
   let navigate = useNavigate();
 
   const handleRegister = () => {
     axios
-      .post("https://10.100.0.59:8000/add_user", {
+      .post("http://10.100.0.59:8000/add_user", {
         username: user,
+        password: password,
       })
       .then((res) => {
-        console.log("res", res, res.data.port);
+        console.log("register res", res, res.data.port);
         navigate(`/`);
       });
   };
@@ -30,12 +32,23 @@ function Register() {
         Register
       </Typography>
       <TextField
+        sx={{ mb: 2 }}
         id="outlined-basic"
         label="Username *"
         variant="outlined"
         value={user}
         onChange={(e) => {
           setUser(e.target.value);
+        }}
+      />
+      <TextField
+        id="outlined-basic"
+        label="password *"
+        variant="outlined"
+        value={password}
+        type="password"
+        onChange={(e) => {
+          setPassword(e.target.value);
         }}
       />
       <Button

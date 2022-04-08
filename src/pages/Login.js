@@ -11,22 +11,35 @@ import axios from "axios";
 
 function Login() {
   const [user, setUser] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [errorMsg, setErrorMsg] = React.useState("");
+
   let navigate = useNavigate();
 
   const handleLogin = () => {
-    console.log("user", user);
+    console.log("user", user, password);
 
-    axios.get("https://10.100.0.59:8000/login/" + user).then((res) => {
-      console.log("port", res, res.data.port);
-      navigate(`/chat/${user}`, {
-        state: { port: res.data.port },
+    axios
+      .post("http://10.100.0.59:8000/login", {
+        username: user,
+        password: password,
+      })
+      .then((res) => {
+        console.log("login res", res);
+
+        if (res.data.port === "NO PORT") {
+          setErrorMsg("User not exist in the chain...Please try again");
+        } else {
+          navigate(`/chat/${user}`, {
+            state: { port: res.data.port },
+          });
+          axios
+            .get(`http://10.100.0.59:${res.data.port}/replace_user_chain`)
+            .then((res) => {
+              console.log("replace_user_chain", res.data);
+            });
+        }
       });
-      axios
-        .get(`https://10.100.0.59:${res.data.port}/replace_user_chain`)
-        .then((res) => {
-          console.log("replace_user_chain", res.data);
-        });
-    });
   };
 
   return (
@@ -34,13 +47,34 @@ function Login() {
       <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
         Login
       </Typography>
+
+      {errorMsg && (
+        <Typography
+          sx={{ mt: 0, mb: 3, color: "red" }}
+          variant="h6"
+          component="div"
+        >
+          {errorMsg}
+        </Typography>
+      )}
       <TextField
+        sx={{ mb: 2 }}
         id="outlined-basic"
         label="Username *"
         variant="outlined"
         value={user}
         onChange={(e) => {
           setUser(e.target.value);
+        }}
+      />
+      <TextField
+        id="outlined-basic"
+        label="password *"
+        variant="outlined"
+        value={password}
+        type="password"
+        onChange={(e) => {
+          setPassword(e.target.value);
         }}
       />
       <Button
@@ -54,13 +88,13 @@ function Login() {
       </Button>
 
       <Button
-        sx={{ backgroundColor: "#2abebe", mt: "15px" }}
+        sx={{ backgroundColor: "teal", mt: "15px" }}
         variant="contained"
         onClick={() => {
           navigate(`/register`);
         }}
       >
-        Register
+        Go to Register Page
       </Button>
     </>
   );
